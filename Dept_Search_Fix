@@ -25,6 +25,7 @@ int main() {
 
 
 	string deptName;
+	int ID;
 
 
 
@@ -37,7 +38,7 @@ int main() {
 	{
 	case 1:
 
-	int ID;
+	
 	char ans = 'Y';
 	cout << "Enter instructor ID : ";
 	cin >> ID;
@@ -55,8 +56,11 @@ int main() {
 	cout << "\n\n TO EXIT PRESS (0)";
 	cin >> choice;
 	break;
+	
 	case 3:
 	break;
+	
+	
 	case 4:
 	break;
 	}
