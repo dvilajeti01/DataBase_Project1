@@ -5,62 +5,103 @@
 
 using namespace std;
 
-void main_Interface();
-void search_ID(int id);
-void search_Dept(string dept);
-string search_dept(string dept);
-void search_instructor(string dept);
+void main_Interface(); //Displays the main menu
+void search_ID(int id); //Searches the "instructor.txt" file for instructor info
+void search_Dept(string dept); //Searches the "department.txt" file for department info
+string search_dept(string dept); //Searches the "department.txt" file for and returns building for department that is being searched
+void search_instructor(string dept); //Searches "instructor.txt" file and returns all proffesors in department given
 void add_instructor(int id, string name, string dept);
 bool existing_dept(string dept);
 bool valid_ID(int ID);
 
-int choice = 0;
+int choice = 0; //conditional variable to check if Main Menu loop should still be running
+char cont; //conditional variable to determine if the choice chosen should be repeated
 
 int main()
 {
-	int ID;
-	string deptName;
+	int ID; //holds instructor id
+	string deptName; //holds deprtment name
 	string instructorName = "";
 
 	do
 	{
-		main_Interface();
+		main_Interface(); //displays main menu
 		switch (choice)
 		{
-		case 1:
-			cout << "Enter instructor ID : ";
-			cin >> ID;
-			search_ID(ID);
-			cout << "\n\n TO RETURN TO MENU PRESS (0): ";
+		case 1: //The case for option 1 in the main menu
+		
+			cont = 'Y';
+
+		while(cont == 'Y')
+		{
+			cout << "ENTER INSTRUCTOR ID: ";
+			cin >> ID; //takes instructor id to be searched as input
+			search_ID(ID); //calls function and prints out instructor info
+			cout << "\n";
+
+			cout << "\nWOULD YOU LIKE TO SEARCH ANOTHER INSTRUCTOR? (Y/N)";
+			cin >> cont;
+		}
+			cout << "\n TO RETURN TO MENU PRESS (0): ";
 			cin >> choice;
+
 			break;
-		case 2:
-			cout << "ENTER DEPARTMENT NAME: ";
-			cin >> deptName;
-			search_Dept(deptName);
-			cout << "\n\n TO RETURN TO MENU PRESS (0): ";
+
+		case 2: //The case for option 2 in the main menu
+
+			cont = 'Y';
+
+			while (cont == 'Y')
+			{
+				cout << "ENTER DEPARTMENT NAME: ";
+				cin >> deptName; //takes department name to be searched as input
+				search_Dept(deptName); // calls function and displays department info
+				cout << "\n";
+
+				cout << "\nWOULD YOU LIKE TO SEARCH ANOTHER DEPARTMENT? (Y/N)";
+				cin >> cont;
+			}
+
+			
+			cout << "\n TO RETURN TO MENU PRESS (0): ";
 			cin >> choice;
+
 			break;
+
 		case 3:
-			cout << "ENTER THE INSTRUCTOR ID: ";
-			cin >> ID;
-			cout << "ENTER THE INSTRUCTOR NAME: ";
-			cin.ignore();
-			getline(cin, instructorName, '\n');
-			cout << "ENTER THE AFFILIATED DEPARTMENT NAME: ";
-			cin >> deptName;
-			add_instructor(ID, instructorName, deptName);
+
+			cont = 'Y';
+
+			while (cont == 'Y')
+			{
+				cout << "ENTER THE INSTRUCTOR ID: ";
+				cin >> ID;
+				cout << "ENTER THE INSTRUCTOR NAME: ";
+				cin.ignore();
+				getline(cin, instructorName, '\n');
+				cout << "ENTER THE AFFILIATED DEPARTMENT NAME: ";
+				cin >> deptName;
+				add_instructor(ID, instructorName, deptName);
+
+				cout << "\nWOULD YOU LIKE TO ADD ANOTHER INSTRUCTOR? (Y/N)";
+				cin >> cont;
+			}
+
 			cout << "\n\n TO RETURN TO MENU PRESS (0): ";
 			cin >> choice;
+
 			break;
 		case 4:
+			choice = 1;
+
 			break;
 		}
 	} while (choice == 0);
+	
 	return 0;
 }
 
-void main_Interface()
+void main_Interface() //main menu
 {
 
 	cout << "===================================================================" << endl;
@@ -68,31 +109,33 @@ void main_Interface()
 	cout << "===================================================================" << endl << "\n\n";
 
 	cout << "MENU" << endl;
-	cout << "1. Enter the instructor ID and I will provide you with the name of the instructor, affiliated department and the location of that department." << endl;
-	cout << "\n2. Enter the department name and I will provide you with the loacation, budget and names of all instructors that work for the department." << endl;
-	cout << "\n3. Insert a record about a new instructor." << endl;
-	cout << "\n4. Exit" << endl << endl;
+	cout << "1. ENTER INSTRUCTOR ID FOR MORE INFO" << endl;
+	cout << "\n2. ENTER DEPARTMENT ID FOR MORE INFO" << endl;
+	cout << "\n3. ENTER NEW INSTRUCTOR TO DATABASE" << endl;
+	cout << "\n4. EXIT" << endl << endl;
 
 	cin >> choice;
 }
 
 void search_ID(int id)
 {
-	int ID;
+	int ID; 
 	string name;
 	string dept_name;
-	fstream datafile_I;
-	datafile_I.open("instructor.txt", ios::in);
-	if (datafile_I)
+	fstream datafile_I; //declares variable with type fstream to open file
+	datafile_I.open("instructor.txt", ios::in); // opens file to be read
+	
+	if (datafile_I)//conditional statement to check if file was succesfully opened 
 	{
-		while (datafile_I >> ID)
+		while (datafile_I >> ID) //checks to see if the file has finished reading
 		{
-			getline(datafile_I, name, ',');
-			getline(datafile_I, name, ',');
-			getline(datafile_I, dept_name);
+			getline(datafile_I, name, ',');//ignores comma
+			getline(datafile_I, name, ',');//reads instructor name into variable "name"
+			getline(datafile_I, dept_name);//reads instructor department into variable "dept_name" 
 
-			if (ID == id)
+			if (ID == id)//conditional statemnt to check if the intended ID has been found
 			{
+				//if yes then it prints the instructor info and terminates the search
 				cout << "INSTRUCTOR ID: " << ID << endl;
 				cout << "INSTRUCTOR NAME: " << name << endl;
 				cout << "INSTRUCTOR DEPARTMENT: " << dept_name << endl;
@@ -100,14 +143,14 @@ void search_ID(int id)
 				break;
 			}
 		}
-		if (ID != id)
+		if (ID != id) //if not error message displayed
 			cout << "THE ID DOES NOT APPEAR IN THE DATABASE.";
 	}
-	else
+	else //returns error message if file not opened 
 	{
 		cout << "FILE COULD NOT BE OPENED" << endl;
 	}
-	datafile_I.close();
+	datafile_I.close(); //closes file
 }
 
 void search_Dept(string dept)
@@ -115,18 +158,18 @@ void search_Dept(string dept)
 	int budget;
 	string building;
 	string dept_name;
-	fstream datafile_D;
-	datafile_D.open("department.txt", ios::in);
+	fstream datafile_D; //declares variable with type fstream to open file
+	datafile_D.open("department.txt", ios::in); // opens file to be read
 
 
 	if (datafile_D)
 	{
 		while (getline(datafile_D, dept_name, ','))
 		{
-			getline(datafile_D, building, ',');
-			datafile_D >> budget;
+			getline(datafile_D, building, ','); //reads department building into variable "building"
+			datafile_D >> budget; //reads department budget into variable "budget"
 
-			if (dept_name == dept)
+			if (dept_name == dept) //prints department info if department searched for is found
 			{
 				cout << "DEPARTMENT NAME: " << dept_name << endl;
 				cout << "DEPARTMENT LOCATION: " << building << endl;
@@ -136,23 +179,25 @@ void search_Dept(string dept)
 				break;
 			}
 
-			else
+			else //if not found it displays error message
 				getline(datafile_D, dept_name);
 		}
 
-		if (dept_name != dept)
+		if (dept_name != dept) 
 		{
 			cout << "THE DEPARTMENT NAME DOES NOT APPEAR IN THE DATABASE.";
 		}
 	}
+	
 	else
 	{
 		cout << "FILE COULD NOT BE OPENED" << endl;
 	}
+	
 	datafile_D.close();
 }
 
-string search_dept(string dept)
+string search_dept(string dept) //searches department file and returns the building for department name searched
 {
 	string dept_name;
 	string building;
@@ -173,21 +218,21 @@ string search_dept(string dept)
 			}
 
 			else
-				getline(datafileD, dept_name);
+				getline(datafileD, dept_name); //if department not found then it moves to next line
 		}
 	}
 	else
 	{
-		cout << "FILE COULD NOT BE OPENED" << endl;
+		return ("FILE COULD NOT BE OPENED"); //if file not opened then it returns error message
 
 	}
 
 	datafileD.close();
 
-	return building;
+	return building; //returns building of department searched for
 }
 
-void search_instructor(string dept)
+void search_instructor(string dept) //searches for all instructor in a given department
 {
 	int id;
 	string name;
@@ -197,13 +242,13 @@ void search_instructor(string dept)
 	datafileI.open("instructor.txt", ios::in);
 	if (datafileI)
 	{
-		while (datafileI >> id)
+		while (datafileI >> id) //reads the entire file and prints every instructor with matching department name
 		{
 			getline(datafileI, name, ',');
 			getline(datafileI, name, ',');
 			getline(datafileI, dept_name);
 
-			if (dept_name == dept)
+			if (dept_name == dept) //if department found the print instructor name
 			{
 				cout << name << endl;
 			}
@@ -251,6 +296,7 @@ bool existing_dept(string dept)
 	else
 	{
 		cout << "FILE COULD NOT BE OPENED" << endl;
+		
 	}
 	datafile_D.close();
 }
